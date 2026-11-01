@@ -1,0 +1,38 @@
+[
+  {
+    "name": "WhatsApp",
+    "category": "apps",
+    "image": "https://placehold.co/120x120/25D366/white?text=WA",
+    "link": "https://www.whatsapp.com/download"
+  },
+  {
+    "name": "VLC Media Player",
+    "category": "apps",
+    "image": "https://placehold.co/120x120/FF8800/white?text=VLC",
+    "link": "https://www.videolan.org/vlc/"
+  },
+  {
+    "name": "Subway Surfers",
+    "category": "games",
+    "image": "https://placehold.co/120x120/2196F3/white?text=SS",
+    "link": "https://example.com/subway-surfers"
+  },
+  {
+    "name": "Minecraft",
+    "category": "games",
+    "image": "https://placehold.co/120x120/5D8C3A/white?text=MC",
+    "link": "https://www.minecraft.net/"
+  },
+  {
+    "name": "Inception",
+    "category": "movies",
+    "image": "https://placehold.co/120x120/333333/white?text=INC",
+    "link": "https://example.com/inception-download"
+  },
+  {
+    "name": "Interstellar",
+    "category": "movies",
+    "image": "https://placehold.co/120x120/1F3A5F/white?text=INT",
+    "link": "https://example.com/interstellar-download"
+  }
+]

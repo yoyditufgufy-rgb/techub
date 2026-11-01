@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Tech Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-start justify-center p-4 sm:p-8">
+
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-lg border border-gray-200 p-5 sm:p-6">
+
+    <!-- Header -->
+    <h1 class="text-2xl font-bold text-gray-900">Your Tech Hub</h1>
+    <p class="text-xs tracking-wider text-gray-500 uppercase mt-1">Website Concept</p>
+
+    <!-- Search -->
+    <div class="relative mt-4">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M21 21l-4.35-4.35" stroke-linecap="round"></path>
+      </svg>
+      <input id="search" type="text" placeholder="Search apps, games, movies..."
+        class="w-full bg-gray-100 rounded-xl py-3 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500">
+    </div>
+
+    <!-- Category tabs -->
+    <div id="categories" class="grid grid-cols-3 gap-2 mt-5 pb-5 border-b border-gray-200">
+      <button data-cat="apps" class="cat-btn flex flex-col items-center gap-1 py-2 rounded-xl text-sm font-medium text-gray-800 hover:bg-gray-100">
+        <span class="text-2xl">📱</span>Apps
+      </button>
+      <button data-cat="games" class="cat-btn flex flex-col items-center gap-1 py-2 rounded-xl text-sm font-medium text-gray-800 hover:bg-gray-100">
+        <span class="text-2xl">🎮</span>Games
+      </button>
+      <button data-cat="movies" class="cat-btn flex flex-col items-center gap-1 py-2 rounded-xl text-sm font-medium text-gray-800 hover:bg-gray-100">
+        <span class="text-2xl">🎬</span>Movies
+      </button>
+    </div>
+
+    <!-- List title -->
+    <h2 id="listTitle" class="mt-5 text-lg font-semibold text-gray-900">Featured resources</h2>
+
+    <!-- Items list (auto-generated from data.json) -->
+    <ul id="list" class="mt-4 space-y-4"></ul>
+    <p id="message" class="hidden text-center text-gray-500 text-sm py-6"></p>
+
+  </div>
+
+  <script>
+    let items = [];
+    let currentCat = "all";
+    let query = "";
+
+    const list = document.getElementById("list");
+    const message = document.getElementById("message");
+    const listTitle = document.getElementById("listTitle");
+    const searchInput = document.getElementById("search");
+    const catButtons = document.querySelectorAll(".cat-btn");
+
+    // HTML escape taaki data.json me special characters safe rahein
+    function esc(text) {
+      return String(text).replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function render() {
+      const q = query.toLowerCase().trim();
+
+      const filtered = items.filter(item =>
+        (currentCat === "all" || item.category === currentCat) &&
+        item.name.toLowerCase().includes(q)
+      );
+
+      listTitle.textContent = currentCat === "all" ? "Featured resources" : capitalize(currentCat);
+
+      list.innerHTML = filtered.map(item => `
+        <li class="flex items-center gap-3">
+          <img src="${esc(item.image)}" alt="${esc(item.name)}"
+            class="w-14 h-14 rounded-2xl object-cover bg-gray-100 shrink-0">
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-900 truncate">${esc(item.name)}</p>
+            <p class="text-sm text-gray-500">${esc(capitalize(item.category))}</p>
+          </div>
+          <a href="${esc(item.link)}" target="_blank" rel="noopener"
+            class="shrink-0 bg-green-100 text-green-700 hover:bg-green-200 font-medium text-sm px-4 py-2 rounded-full">
+            Download
+          </a>
+        </li>
+      `).join("");
+
+      if (filtered.length === 0) {
+        message.textContent = "Koi item nahi mila";
+        message.classList.remove("hidden");
+      } else {
+        message.classList.add("hidden");
+      }
+    }
+
+    function setActiveCategory(cat) {
+      currentCat = currentCat === cat ? "all" : cat; // dobara click karne par filter hat jaye
+      catButtons.forEach(btn => {
+        const active = btn.dataset.cat === currentCat;
+        btn.classList.toggle("bg-green-100", active);
+        btn.classList.toggle("text-green-700", active);
+      });
+      render();
+    }
+
+    catButtons.forEach(btn =>
+      btn.addEventListener("click", () => setActiveCategory(btn.dataset.cat))
+    );
+
+    searchInput.addEventListener("input", e => {
+      query = e.target.value;
+      render();
+    });
+
+    // data.json se items load karo
+    fetch("data.json")
+      .then(res => {
+        if (!res.ok) throw new Error("Load failed");
+        return res.json();
+      })
+      .then(data => {
+        items = data;
+        render();
+      })
+      .catch(() => {
+        message.textContent = "data.json load nahi hua. Local server se kholein.";
+        message.classList.remove("hidden");
+      });
+  </script>
+</body>
+</html>
